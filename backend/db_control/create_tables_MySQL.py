@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker
-from db_control.mymodels_MySQL import Base, Customers
+from db_control.mymodels_MySQL import Base
 from db_control.connect_MySQL import engine
 
 

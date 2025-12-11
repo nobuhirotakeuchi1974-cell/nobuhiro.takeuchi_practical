@@ -17,6 +17,12 @@ DB_NAME = os.getenv('DB_NAME')
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 SSL_CA_PATH = os.getenv('SSL_CA_PATH')
+# SSL証明書ファイルのパスを絶対パスに変換
+# connect_MySQL.pyの場所から見た相対パス
+current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.dirname(current_dir)  # db_controlの親ディレクトリ（backend）
+cert_path = os.path.join(backend_dir, "DigiCertGlobalRootG2.crt.pem")
+
 # エンジンの作成
 engine = create_engine(
     DATABASE_URL,
@@ -24,6 +30,9 @@ engine = create_engine(
     pool_pre_ping=True,
     pool_recycle=3600,
     connect_args={
-        "ssl_ca": SSL_CA_PATH
+        "ssl": {
+            "ca": cert_path,
+            "check_hostname": False
+        }
     }
 )
