@@ -1,8 +1,11 @@
 import OneCustomerInfoCard from "@/app/components/one_customer_info_card.jsx";
 
+export const dynamic = 'force-dynamic';
+
 async function fetchCustomer(id) {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_API_ENDPOINT + `/customers?customer_id=${id}`
+    process.env.NEXT_PUBLIC_API_ENDPOINT + `/customers?customer_id=${id}`,
+    { cache: 'no-store' }
   );
   if (!res.ok) {
     throw new Error("Failed to fetch customer");
@@ -10,8 +13,13 @@ async function fetchCustomer(id) {
   return res.json();
 }
 
-export default async function ReadPage({ query }) {
-  const { id } = query;
+export default async function ReadPage({ searchParams }) {
+  const id = searchParams?.id;
+  
+  if (!id) {
+    return <div className="alert alert-error">IDが指定されていません</div>;
+  }
+  
   const customerInfo = await fetchCustomer(id);
 
   return (
