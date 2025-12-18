@@ -10,6 +10,7 @@ const nextConfig = {
       },
       // SSRの問題を軽減
       reactStrictMode: true,
+      output: 'standalone',
 }
 
 module.exports = nextConfig
