@@ -1,23 +1,28 @@
 "use client";
+import { Suspense } from "react";
 import OneCustomerInfoCard from "@/app/components/one_customer_info_card.jsx";
 import fetchCustomer from "./fetchCustomer";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const dynamic = 'force-dynamic';
-
-export default function ConfirmPage() {
+function ConfirmContent() {
   const router = useRouter();
   const customer_id = useSearchParams().get("customer_id");
   const [customer, setCustomer] = useState(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const fetchAndSetCustomer = async () => {
-      const customerData = await fetchCustomer(customer_id);
-      setCustomer(customerData);
-    };
-    fetchAndSetCustomer();
-  }, []);
+    setMounted(true);
+    if (customer_id) {
+      const fetchAndSetCustomer = async () => {
+        const customerData = await fetchCustomer(customer_id);
+        setCustomer(customerData);
+      };
+      fetchAndSetCustomer();
+    }
+  }, [customer_id]);
+
+  if (!mounted) return null;
 
   return (
     <>
@@ -25,11 +30,19 @@ export default function ConfirmPage() {
         <div className="alert alert-success p-4 text-center">
           正常に作成しました
         </div>
-        <OneCustomerInfoCard {...customer} />
+        {customer && <OneCustomerInfoCard {...customer} />}
         <button onClick={() => router.push("./../../customers")}>
           <div className="btn btn-primary m-4 text-2xl">戻る</div>
         </button>
       </div>
     </>
+  );
+}
+
+export default function ConfirmPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfirmContent />
+    </Suspense>
   );
 }
