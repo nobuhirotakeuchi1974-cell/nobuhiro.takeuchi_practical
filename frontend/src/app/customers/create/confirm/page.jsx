@@ -4,6 +4,8 @@ import fetchCustomer from "./fetchCustomer";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+export const dynamic = 'force-dynamic';
+
 export default function ConfirmPage() {
   const router = useRouter();
   const customer_id = useSearchParams().get("customer_id");
